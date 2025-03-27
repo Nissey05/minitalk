@@ -6,7 +6,7 @@
 /*   By: nhendrik <nhendrik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 00:03:19 by nhendrik          #+#    #+#             */
-/*   Updated: 2025/03/26 16:17:27 by nhendrik         ###   ########.fr       */
+/*   Updated: 2025/03/27 13:33:23 by nhendrik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 static int g_bitreceived = 0;
 
-void send_char(int c, int pid)
+int	send_char(int c, int pid)
 {
 	int i;
 
@@ -31,8 +31,11 @@ void send_char(int c, int pid)
 		i++;
 		while (!g_bitreceived)
 			usleep(1);
+		if (g_bitreceived == -1)
+			return (0);
 		g_bitreceived = 0;
 	}
+	return (1);
 }
 
 void send_string(char *str, int pid)
@@ -42,7 +45,8 @@ void send_string(char *str, int pid)
 	i = 0;
 	while (str[i])
 	{
-		send_char((int)str[i], pid);
+		if (!send_char((int)str[i], pid))
+			return ;
 		i++;
 	}
 	send_char('\n', pid);
@@ -50,8 +54,10 @@ void send_string(char *str, int pid)
 
 void	handle(int signal)
 {
-	signal = 0;
-	g_bitreceived = 1;
+	if (signal == SIGUSR2)
+		g_bitreceived = -1;
+	else
+		g_bitreceived = 1;
 }
 
 int main(int argc, char **argv)
@@ -62,5 +68,6 @@ int main(int argc, char **argv)
 		return (write(2, "Incorrect Input\n", 16)-1);
 	pid = atoi(argv[1]);
 	signal(SIGUSR1, handle);
+	signal(SIGUSR2, handle);
 	send_string(argv[2], pid);
 }

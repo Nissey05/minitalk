@@ -6,17 +6,17 @@
 /*   By: nhendrik <nhendrik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 00:03:10 by nhendrik          #+#    #+#             */
-/*   Updated: 2025/03/26 18:57:55 by nhendrik         ###   ########.fr       */
+/*   Updated: 2025/03/27 13:33:29 by nhendrik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
-#include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
-volatile static int g_inforeceived[2] = {0, 0};
+static volatile int g_inforeceived[2] = {0, 0};
 
 void	reset_and_print(int *input, int *counter, int zero)
 {
